@@ -1,174 +1,435 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yinn-Multitools</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
-        .header {
-            background: #333;
-            color: #fff;
-            padding: 1rem 0;
-            text-align: center;
-        }
-        .container {
-            width: 80%;
-            margin: auto;
-            overflow: hidden;
-            padding: 2rem 0;
-        }
-        .tool-card {
-            background: #fff;
-            padding: 2rem;
-            margin-bottom: 1rem;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .tool-card h2 {
-            margin-top: 0;
-        }
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        .form-group input[type="text"] {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .form-group button {
-            background: #5cb85c;
-            color: #fff;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .result-box {
-            background: #e9e9e9;
-            padding: 1rem;
-            border-radius: 4px;
-            margin-top: 1rem;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        .footer {
-            background: #333;
-            color: #fff;
-            text-align: center;
-            padding: 1rem 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Yinn - Multitools Dashboard</title>
+  <style>
+    /* Reset ringan */
+    * { box-sizing: border-box; }
+    html,body { height:100%; margin:0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: linear-gradient(180deg,#f6fbff 0%, #ffffff 100%); color:#122; }
+
+    /* Layout */
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 24px;
+      min-height:100vh;
+      padding: 28px;
+    }
+
+    /* Responsive: mobile satu kolom */
+    @media (max-width:880px){
+      .app { grid-template-columns: 1fr; padding: 16px; }
+      .sidebar { position: sticky; top: 0; z-index: 10; }
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: linear-gradient(180deg,#0f1724, #071024);
+      color: #e6eefc;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 6px 20px rgba(2,6,23,0.18);
+      height: fit-content;
+    }
+    .brand { font-weight:700; font-size:20px; letter-spacing:0.4px; display:flex; gap:10px; align-items:center; }
+    .logo {
+      width:40px; height:40px; border-radius:8px; background:linear-gradient(135deg,#7c3aed,#06b6d4); display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700;
+    }
+    .sidebar p { margin:8px 0 18px 0; opacity:0.95; font-size:13px; line-height:1.4; }
+
+    .menu { display:flex; flex-direction:column; gap:8px; }
+    .menu button {
+      background: transparent; border:0; color:inherit; text-align:left;
+      padding:10px 12px; border-radius:8px; cursor:pointer; font-size:14px;
+    }
+    .menu button:hover { background: rgba(255,255,255,0.03); }
+    .menu button.active { background: rgba(255,255,255,0.04); box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); }
+
+    /* Main content */
+    .main {
+      display:flex; flex-direction:column; gap:18px;
+    }
+    .topbar {
+      display:flex; align-items:center; justify-content:space-between; gap:16px;
+    }
+    .searchbar {
+      display:flex; gap:8px; align-items:center;
+      background:#fff; padding:8px; border-radius:10px; box-shadow:0 4px 10px rgba(2,6,23,0.06);
+    }
+    .searchbar input { border:0; outline:none; padding:8px; font-size:14px; min-width:220px; background:transparent; }
+    .btn { background:linear-gradient(90deg,#6366f1,#06b6d4); color:white; padding:10px 14px; border-radius:10px; border:0; cursor:pointer; font-weight:600; box-shadow: 0 6px 18px rgba(6,11,32,0.12); transition: transform .12s ease; }
+    .btn:active { transform: translateY(1px); }
+
+    /* Cards grid */
+    .grid { display:grid; grid-template-columns: repeat(2, 1fr); gap:18px; }
+    @media (max-width:1100px){ .grid{ grid-template-columns: 1fr; } }
+
+    .card {
+      background: white; border-radius:12px; padding:18px; box-shadow: 0 8px 30px rgba(11,15,30,0.06);
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(11,15,30,0.08); }
+    .card h3 { margin:0 0 10px 0; font-size:16px; }
+    .muted { color:#6b7280; font-size:13px; margin-top:6px; }
+
+    /* results */
+    .results { margin-top:12px; max-height:280px; overflow:auto; padding:6px; border-radius:8px; background:#fbfdff; border:1px solid #eef2ff; }
+    .result-item { padding:8px 10px; border-radius:8px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .result-item + .result-item { margin-top:8px; }
+    .badge { padding:6px 10px; border-radius:999px; background:#eef2ff; font-weight:600; font-size:12px; color:#0f1724; }
+
+    /* small helpers */
+    .hint { font-size:13px; color:#475569; }
+    .flex { display:flex; gap:8px; align-items:center; }
+    pre { white-space:pre-wrap; word-break:break-word; font-size:13px; margin:0; }
+
+    footer { text-align:center; color:#94a3b8; font-size:13px; margin-top:6px; }
+  </style>
 </head>
 <body>
-
-<div class="header">
-    <h1>Yinn-Multitools</h1>
-    <p>Kumpulan Alat Penting untuk Developer dan Keamanan</p>
-</div>
-
-<div class="container">
-
-    <div class="tool-card">
-        <h2>🔎 Subdomain Finder</h2>
-        <p>Temukan subdomain dari domain yang diberikan.</p>
-        <div class="form-group">
-            <input type="text" id="subdomain-input" placeholder="Masukkan domain (contoh: google.com)">
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">YM</div>
+        <div>
+          <div>Yinn Multitools</div>
+          <div style="font-size:12px; opacity:0.9">Dashboard — utilitas jaringan & DNS</div>
         </div>
-        <div class="form-group">
-            <button onclick="findSubdomains()">Cari Subdomain</button>
-        </div>
-        <div class="result-box" id="subdomain-result">
-            Hasil akan muncul di sini...
-        </div>
-    </div>
+      </div>
 
-    <div class="tool-card">
-        <h2>🕵️ Proxy Checker</h2>
-        <p>Periksa status dan informasi dari proxy.</p>
-        <div class="form-group">
-            <input type="text" id="proxy-input" placeholder="Masukkan IP proxy:port">
-        </div>
-        <div class="form-group">
-            <button onclick="checkProxy()">Cek Proxy</button>
-        </div>
-        <div class="result-box" id="proxy-result">
-            Hasil akan muncul di sini...
-        </div>
-    </div>
+      <p>Tool ringan untuk cek info IP, scan subdomain (DoH), dan utilitas lainnya. Untuk scanning besar-besaran pakai backend/serverless agar lebih cepat & aman.</p>
 
-    <div class="tool-card">
-        <h2>🗺️ IP Info</h2>
-        <p>Dapatkan informasi geografis dan penyedia layanan dari alamat IP.</p>
-        <div class="form-group">
-            <input type="text" id="ipinfo-input" placeholder="Masukkan alamat IP">
+      <div class="menu" role="tablist" aria-label="menu">
+        <button class="active" data-target="dashboard">Dashboard</button>
+        <button data-target="subdomain">Subdomain Finder</button>
+        <button data-target="ipinfo">IP Info</button>
+        <button data-target="tools">Lainnya</button>
+      </div>
+
+      <hr style="border:0;height:1px;background:rgba(255,255,255,0.03); margin:16px 0"/>
+
+      <div style="font-size:13px; color:#cbd5e1">
+        <div><strong>Tips</strong></div>
+        <div style="margin-top:8px" class="hint">Gunakan mode incognito jika page tidak update. Subdomain scan butuh beberapa detik per domain.</div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="topbar">
+        <div style="display:flex; flex-direction:column;">
+          <h2 style="margin:0">Dashboard</h2>
+          <div style="color:#64748b; font-size:13px">Panel utama — pilih tool di kiri atau scroll ke bawah</div>
         </div>
-        <div class="form-group">
-            <button onclick="getIpInfo()">Dapatkan Info IP</button>
+
+        <div class="flex">
+          <div class="searchbar" title="Quick search (non-functional demo)">
+            <input placeholder="Pencarian cepat..." />
+            <button class="btn" style="padding:8px 10px">Go</button>
+          </div>
+          <button class="btn" id="refreshBtn" title="Reload">Reload</button>
         </div>
-        <div class="result-box" id="ipinfo-result">
-            Hasil akan muncul di sini...
+      </div>
+
+      <!-- GRID -->
+      <section id="dashboard" class="card-section">
+        <div class="grid">
+          <!-- Subdomain Finder card (shortcut) -->
+          <div class="card" id="card-sub-short">
+            <h3>Subdomain Finder</h3>
+            <div class="muted">Masukkan domain, gotong scan beberapa subdomain umum (client-side DoH).</div>
+
+            <div style="margin-top:12px" class="flex">
+              <input id="sd-domain-short" placeholder="contoh: example.com" style="flex:1; padding:8px; border-radius:8px; border:1px solid #e6eefc;"/>
+              <button class="btn" id="sd-start-short">Scan</button>
+            </div>
+
+            <div class="results" id="sd-results-short" style="margin-top:12px">
+              <div class="hint">Hasil akan muncul di sini.</div>
+            </div>
+          </div>
+
+          <!-- IP Info card -->
+          <div class="card" id="card-ip-short">
+            <h3>IP Info</h3>
+            <div class="muted">Cek informasi IP publik atau IP tertentu.</div>
+
+            <div style="margin-top:12px" class="flex">
+              <input id="ip-input-short" placeholder="kosong = deteksi IP publik, atau ketik: 8.8.8.8" style="flex:1; padding:8px; border-radius:8px; border:1px solid #e6eefc;"/>
+              <button class="btn" id="ip-check-short">Cek</button>
+            </div>
+
+            <div class="results" id="ip-results-short" style="margin-top:12px">
+              <div class="hint">Hasil akan muncul di sini.</div>
+            </div>
+          </div>
+
         </div>
-    </div>
 
-</div>
+        <!-- full tools below -->
+        <div style="margin-top:18px" class="grid">
+          <!-- Subdomain Finder full -->
+          <div class="card" id="subdomain">
+            <h3>Subdomain Finder — Full</h3>
+            <div class="muted">Scanner sederhana pake DNS-over-HTTPS (dns.google). Cocok untuk testing. Jangan scan domain orang tanpa izin.</div>
 
-<div class="footer">
-    <p>&copy; 2025 Yinn-Multitools. All rights reserved.</p>
-</div>
+            <div style="margin-top:12px" class="form">
+              <label class="hint">Domain</label>
+              <input id="sd-domain" placeholder="example.com" style="width:100%; padding:10px; border-radius:8px; border:1px solid #e6eefc; margin-top:6px"/>
 
-<script>
-    // Ini adalah tempat untuk kode JavaScript yang akan memanggil API atau fungsi backend
-    // untuk menjalankan fitur-fitur di atas. Fungsi-fungsi ini saat ini hanya
-    // contoh dan tidak akan berfungsi tanpa implementasi backend.
+              <div style="margin-top:10px" class="flex">
+                <label class="hint">Thread delay (ms)</label>
+                <input id="sd-delay" type="number" value="250" style="width:120px; padding:8px; border-radius:8px; border:1px solid #e6eefc; margin-left:8px"/>
+                <button class="btn" id="sd-start">Mulai Scan</button>
+                <button class="btn" id="sd-stop" style="background: #ef4444">Stop</button>
+              </div>
 
-    function findSubdomains() {
-        const domain = document.getElementById('subdomain-input').value;
-        const resultBox = document.getElementById('subdomain-result');
-        if (domain) {
-            resultBox.innerHTML = `Mencari subdomain untuk ${domain}...`;
-            // Di sini akan ada kode untuk memanggil API backend
-            // contoh: fetch(`/api/subdomain-finder?domain=${domain}`)
-            // .then(response => response.json())
-            // .then(data => { resultBox.innerHTML = JSON.stringify(data, null, 2); });
-        } else {
-            resultBox.innerHTML = 'Silakan masukkan domain.';
-        }
+              <div style="margin-top:12px">
+                <label class="hint">Wordlist (pisah dengan koma) — default akan dipakai kalau kosong</label>
+                <textarea id="sd-wordlist" rows="3" placeholder="www,mail,ftp,dev,api" style="width:100%; padding:10px; margin-top:6px; border-radius:8px; border:1px solid #e6eefc"></textarea>
+              </div>
+
+              <div class="results" id="sd-results" style="margin-top:12px">
+                <div class="hint">Hasil subdomain yang ditemukan akan tampil di sini.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- IP Info full -->
+          <div class="card" id="ipinfo">
+            <h3>IP Info — Full</h3>
+            <div class="muted">Dapatkan geolokasi, ISP, ASN, dan detail lain. Mengosongkan input akan mendeteksi IP publik klien.</div>
+
+            <div style="margin-top:12px" class="flex">
+              <input id="ip-input" placeholder="8.8.8.8 atau kosong" style="flex:1; padding:10px; border-radius:8px; border:1px solid #e6eefc"/>
+              <button class="btn" id="ip-check">Cek IP</button>
+            </div>
+
+            <div class="results" id="ip-results" style="margin-top:12px">
+              <div class="hint">Hasil akan muncul di sini.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- placeholder -->
+      <section id="tools" class="card-section" style="display:none">
+        <div class="card">
+          <h3>Lainnya</h3>
+          <div class="muted">Nanti bisa ditambah: Port scanner, WHOIS, Reverse DNS, HTTP header checker, dll.</div>
+        </div>
+      </section>
+
+      <footer>
+        © <strong>Yinn Multitools</strong> — built with ❤️ · Simple client-side tools. Use responsibly.
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // --- UI helpers ---
+    const menuButtons = document.querySelectorAll('.menu button');
+    menuButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        menuButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        // show/hide sections
+        const target = btn.dataset.target;
+        document.querySelectorAll('.card-section').forEach(s => s.style.display = 'none');
+        const el = document.getElementById(target);
+        if (el) el.style.display = 'block';
+        // if target not found show dashboard
+        if (!el) document.getElementById('dashboard').style.display = 'block';
+      })
+    });
+    // default show dashboard
+    document.getElementById('dashboard').style.display = 'block';
+
+    // refresh button
+    document.getElementById('refreshBtn').addEventListener('click', ()=> location.reload());
+
+    // --- Subdomain Finder logic (DoH via dns.google) ---
+    const defaultWords = [
+      "www","mail","ftp","api","dev","staging","webmail","ns1","ns2","ftp","cpanel","shop","admin","portal","test","beta","m","secure","vpn","smtp","mobile","blog","static","cdn","git","gitlab","jira","git","docs","support","img","images","img1","api2","dashboard","secure","payment","payments","app","apps"
+    ];
+
+    let sdRunning = false;
+    let sdAbort = false;
+
+    async function dohResolve(name) {
+      // dns.google v2 endpoint
+      const url = `https://dns.google/resolve?name=${encodeURIComponent(name)}&type=A`;
+      try {
+        const res = await fetch(url, {cache:'no-store'});
+        if (!res.ok) return null;
+        const data = await res.json();
+        if (data && data.Status === 0 && data.Answer && data.Answer.length) return data.Answer;
+        return null;
+      } catch (e) {
+        return null;
+      }
     }
 
-    function checkProxy() {
-        const proxy = document.getElementById('proxy-input').value;
-        const resultBox = document.getElementById('proxy-result');
-        if (proxy) {
-            resultBox.innerHTML = `Memeriksa proxy ${proxy}...`;
-            // Di sini akan ada kode untuk memanggil API backend
-        } else {
-            resultBox.innerHTML = 'Silakan masukkan proxy IP.';
-        }
+    function appendSdResult(container, subdomain, answers){
+      const node = document.createElement('div');
+      node.className = 'result-item';
+      const left = document.createElement('div');
+      left.innerHTML = `<strong>${subdomain}</strong><div class="muted" style="font-size:13px">${answers.map(a=>a.data).slice(0,3).join(', ')}</div>`;
+      const right = document.createElement('div');
+      right.innerHTML = `<span class="badge">FOUND</span>`;
+      node.appendChild(left);
+      node.appendChild(right);
+      container.prepend(node);
     }
 
-    function getIpInfo() {
-        const ip = document.getElementById('ipinfo-input').value;
-        const resultBox = document.getElementById('ipinfo-result');
-        if (ip) {
-            resultBox.innerHTML = `Mendapatkan info untuk IP ${ip}...`;
-            // Di sini akan ada kode untuk memanggil API backend
-        } else {
-            resultBox.innerHTML = 'Silakan masukkan alamat IP.';
-        }
+    function appendSdNotFound(container, subdomain){
+      const node = document.createElement('div');
+      node.className = 'result-item';
+      node.innerHTML = `<div style="opacity:.7">${subdomain}</div><div class="muted" style="font-size:12px">not found</div>`;
+      container.appendChild(node);
     }
-</script>
 
+    async function subdomainScan(domain, container, wordlist=null, delay=250){
+      if (!domain) { alert('Masukkan domain dulu!'); return; }
+      sdRunning = true; sdAbort = false;
+      container.innerHTML = '';
+      const words = (wordlist && wordlist.length) ? wordlist : defaultWords;
+      for (let i=0;i<words.length;i++){
+        if (!sdRunning || sdAbort) { break; }
+        const sub = `${words[i].trim()}.${domain}`;
+        // minimal delay to avoid rate-limit
+        const answers = await dohResolve(sub);
+        if (answers) {
+          appendSdResult(container, sub, answers);
+        } else {
+          // optionally show not found; comment out to reduce noise
+          // appendSdNotFound(container, sub);
+        }
+        await new Promise(r => setTimeout(r, delay));
+      }
+      sdRunning = false;
+      const done = document.createElement('div'); done.className='hint'; done.textContent = 'Scan selesai.';
+      container.prepend(done);
+    }
+
+    // start/stop buttons
+    document.getElementById('sd-start').addEventListener('click', ()=>{
+      const domain = document.getElementById('sd-domain').value.trim();
+      const delay = parseInt(document.getElementById('sd-delay').value) || 250;
+      const wl = document.getElementById('sd-wordlist').value.trim();
+      const list = wl ? wl.split(',').map(s=>s.trim()).filter(Boolean) : null;
+      const container = document.getElementById('sd-results');
+      subdomainScan(domain, container, list, delay);
+    });
+    document.getElementById('sd-stop').addEventListener('click', ()=>{
+      sdAbort = true;
+      sdRunning = false;
+    });
+
+    // quick scan from dashboard card
+    document.getElementById('sd-start-short').addEventListener('click', ()=>{
+      const domain = document.getElementById('sd-domain-short').value.trim();
+      const container = document.getElementById('sd-results-short');
+      container.innerHTML = '';
+      subdomainScan(domain, container, null, 300);
+    });
+
+    // --- IP Info ---
+    async function fetchIpInfo(ip) {
+      // Try ipwhois.app (no key needed, has rate limits)
+      try {
+        const url = ip ? `https://ipwhois.app/json/${encodeURIComponent(ip)}` : `https://ipwhois.app/json/`;
+        const res = await fetch(url, {cache:'no-store'});
+        if (!res.ok) throw new Error('not ok');
+        const data = await res.json();
+        if (data && !data.success === false) return data;
+      } catch(e) {
+        // fallback: ipapi.co
+        try {
+          const url2 = ip ? `https://ipapi.co/${encodeURIComponent(ip)}/json/` : `https://ipapi.co/json/`;
+          const r2 = await fetch(url2, {cache:'no-store'});
+          if (!r2.ok) throw new Error('fallback fail');
+          return await r2.json();
+        } catch(e2) {
+          return null;
+        }
+      }
+      return null;
+    }
+
+    function showIpResult(container, data){
+      container.innerHTML = '';
+      if (!data) { container.innerHTML = '<div class="hint">Gagal mendapatkan data. Coba lagi nanti atau gunakan backend.</div>'; return; }
+      const rows = [];
+      // common fields from ipwhois.app & ipapi.co
+      rows.push(['IP', data.ip || data.query || '—']);
+      if (data.city) rows.push(['Kota', data.city]);
+      if (data.region) rows.push(['Region', data.region]);
+      if (data.country) rows.push(['Negara', `${data.country}${data.country_code ? ' ('+data.country_code+')' : ''}`]);
+      if (data.latitude || data.longitude) rows.push(['Lokasi', `${data.latitude || data.lat || '—'}, ${data.longitude || data.lon || '—'}`]);
+      if (data.org) rows.push(['Org / ISP', data.org]);
+      if (data.isp) rows.push(['ISP', data.isp]);
+      if (data.asn || data.as) rows.push(['ASN', data.asn || data.as]);
+      if (data.timezone || data.time_zone) rows.push(['Timezone', data.timezone || data.time_zone?.id || '—']);
+      if (data.currency) rows.push(['Currency', data.currency]);
+      if (data.postal) rows.push(['Postal', data.postal]);
+
+      rows.forEach(r=>{
+        const item = document.createElement('div');
+        item.className = 'result-item';
+        item.innerHTML = `<div><strong>${r[0]}</strong><div class="muted">${r[1]}</div></div>`;
+        container.appendChild(item);
+      });
+
+      // raw JSON
+      const raw = document.createElement('div');
+      raw.style.marginTop='10px';
+      raw.innerHTML = '<div class="muted" style="margin-bottom:6px">Raw data:</div><pre>'+JSON.stringify(data, null, 2)+'</pre>';
+      container.appendChild(raw);
+    }
+
+    document.getElementById('ip-check').addEventListener('click', async ()=>{
+      const ip = document.getElementById('ip-input').value.trim();
+      const container = document.getElementById('ip-results');
+      container.innerHTML = '<div class="hint">Mencari…</div>';
+      const data = await fetchIpInfo(ip || null);
+      showIpResult(container, data);
+    });
+    // short card
+    document.getElementById('ip-check-short').addEventListener('click', async ()=>{
+      const ip = document.getElementById('ip-input-short').value.trim();
+      const container = document.getElementById('ip-results-short');
+      container.innerHTML = '<div class="hint">Mencari…</div>';
+      const data = await fetchIpInfo(ip || null);
+      showIpResult(container, data);
+    });
+
+    // small UX: allow Enter key to trigger actions
+    document.querySelectorAll('input').forEach(inp=>{
+      inp.addEventListener('keydown', (e)=>{
+        if (e.key === 'Enter') {
+          // find closest card button
+          const id = inp.id;
+          if (id.startsWith('sd-domain')) document.getElementById('sd-start-short').click();
+          if (id === 'ip-input' || id === 'ip-input-short') document.querySelector('#ip-check-short')?.click() || document.querySelector('#ip-check')?.click();
+        }
+      });
+    });
+
+    // try to auto-detect public IP and show on load
+    (async ()=>{
+      const c = document.getElementById('ip-results-short');
+      c.innerHTML = '<div class="hint">Mendeteksi IP publik…</div>';
+      const data = await fetchIpInfo(null);
+      if (data) {
+        showIpResult(c, data);
+      } else {
+        c.innerHTML = '<div class="hint">Tidak dapat mendeteksi IP publik otomatis.</div>';
+      }
+    })();
+  </script>
 </body>
 </html>
