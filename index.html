@@ -1,5 +1,174 @@
 <!DOCTYPE html>
-<html>
-<head><title>Website Pertama</title></head>
-<body><h1>Halo Dunia!</h1><p>Website gratis dari GitHub Pages.</p></body>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yinn-Multitools</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .header {
+            background: #333;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 2rem 0;
+        }
+        .tool-card {
+            background: #fff;
+            padding: 2rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .tool-card h2 {
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group button {
+            background: #5cb85c;
+            color: #fff;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .result-box {
+            background: #e9e9e9;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Yinn-Multitools</h1>
+    <p>Kumpulan Alat Penting untuk Developer dan Keamanan</p>
+</div>
+
+<div class="container">
+
+    <div class="tool-card">
+        <h2>🔎 Subdomain Finder</h2>
+        <p>Temukan subdomain dari domain yang diberikan.</p>
+        <div class="form-group">
+            <input type="text" id="subdomain-input" placeholder="Masukkan domain (contoh: google.com)">
+        </div>
+        <div class="form-group">
+            <button onclick="findSubdomains()">Cari Subdomain</button>
+        </div>
+        <div class="result-box" id="subdomain-result">
+            Hasil akan muncul di sini...
+        </div>
+    </div>
+
+    <div class="tool-card">
+        <h2>🕵️ Proxy Checker</h2>
+        <p>Periksa status dan informasi dari proxy.</p>
+        <div class="form-group">
+            <input type="text" id="proxy-input" placeholder="Masukkan IP proxy:port">
+        </div>
+        <div class="form-group">
+            <button onclick="checkProxy()">Cek Proxy</button>
+        </div>
+        <div class="result-box" id="proxy-result">
+            Hasil akan muncul di sini...
+        </div>
+    </div>
+
+    <div class="tool-card">
+        <h2>🗺️ IP Info</h2>
+        <p>Dapatkan informasi geografis dan penyedia layanan dari alamat IP.</p>
+        <div class="form-group">
+            <input type="text" id="ipinfo-input" placeholder="Masukkan alamat IP">
+        </div>
+        <div class="form-group">
+            <button onclick="getIpInfo()">Dapatkan Info IP</button>
+        </div>
+        <div class="result-box" id="ipinfo-result">
+            Hasil akan muncul di sini...
+        </div>
+    </div>
+
+</div>
+
+<div class="footer">
+    <p>&copy; 2025 Yinn-Multitools. All rights reserved.</p>
+</div>
+
+<script>
+    // Ini adalah tempat untuk kode JavaScript yang akan memanggil API atau fungsi backend
+    // untuk menjalankan fitur-fitur di atas. Fungsi-fungsi ini saat ini hanya
+    // contoh dan tidak akan berfungsi tanpa implementasi backend.
+
+    function findSubdomains() {
+        const domain = document.getElementById('subdomain-input').value;
+        const resultBox = document.getElementById('subdomain-result');
+        if (domain) {
+            resultBox.innerHTML = `Mencari subdomain untuk ${domain}...`;
+            // Di sini akan ada kode untuk memanggil API backend
+            // contoh: fetch(`/api/subdomain-finder?domain=${domain}`)
+            // .then(response => response.json())
+            // .then(data => { resultBox.innerHTML = JSON.stringify(data, null, 2); });
+        } else {
+            resultBox.innerHTML = 'Silakan masukkan domain.';
+        }
+    }
+
+    function checkProxy() {
+        const proxy = document.getElementById('proxy-input').value;
+        const resultBox = document.getElementById('proxy-result');
+        if (proxy) {
+            resultBox.innerHTML = `Memeriksa proxy ${proxy}...`;
+            // Di sini akan ada kode untuk memanggil API backend
+        } else {
+            resultBox.innerHTML = 'Silakan masukkan proxy IP.';
+        }
+    }
+
+    function getIpInfo() {
+        const ip = document.getElementById('ipinfo-input').value;
+        const resultBox = document.getElementById('ipinfo-result');
+        if (ip) {
+            resultBox.innerHTML = `Mendapatkan info untuk IP ${ip}...`;
+            // Di sini akan ada kode untuk memanggil API backend
+        } else {
+            resultBox.innerHTML = 'Silakan masukkan alamat IP.';
+        }
+    }
+</script>
+
+</body>
 </html>
