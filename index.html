@@ -215,47 +215,54 @@
       try {
         const apiURL = `https://api.tiklydown.me/api/download?url=${encodeURIComponent(url)}`;
         const res = await fetch(apiURL);
+
+        if (!res.ok) {
+          statusText.textContent = `🚫 API Error: ${res.status} ${res.statusText}`;
+          showLoading(false);
+          return;
+        }
+
         const data = await res.json();
 
-        if (data.status && data.video.noWatermark) {
-          let mediaURL = '';
-          const choice = qualitySelect.value;
-
-          if (choice === 'nowatermark') mediaURL = data.video.noWatermark;
-          else if (choice === 'watermark') mediaURL = data.video.watermark;
-          else if (choice === 'audio') mediaURL = data.music.play_url;
-
-          if (!mediaURL) {
-            statusText.textContent = '⚠️ Media tidak tersedia untuk pilihan ini.';
-            result.innerHTML = '';
-            showLoading(false);
-            return;
-          }
-
-          statusText.textContent = '';
-
-          if (choice === 'audio') {
-            result.innerHTML = `
-              <audio controls>
-                <source src="${mediaURL}" type="audio/mpeg" />
-                Browser Anda tidak mendukung pemutar audio.
-              </audio>
-              <br />
-              <a href="${mediaURL}" download class="download-btn">Download Audio</a>
-            `;
-          } else {
-            result.innerHTML = `
-              <video controls playsinline>
-                <source src="${mediaURL}" type="video/mp4" />
-                Browser Anda tidak mendukung pemutar video.
-              </video>
-              <br />
-              <a href="${mediaURL}" download class="download-btn">Download Video</a>
-            `;
-          }
-        } else {
+        if (!data.status) {
           statusText.textContent = '❌ Gagal mengambil media. Pastikan URL benar dan publik.';
-          result.innerHTML = '';
+          showLoading(false);
+          return;
+        }
+
+        let mediaURL = '';
+        const choice = qualitySelect.value;
+
+        if (choice === 'nowatermark') mediaURL = data.video.noWatermark;
+        else if (choice === 'watermark') mediaURL = data.video.watermark;
+        else if (choice === 'audio') mediaURL = data.music.play_url;
+
+        if (!mediaURL) {
+          statusText.textContent = '⚠️ Media tidak tersedia untuk pilihan ini.';
+          showLoading(false);
+          return;
+        }
+
+        statusText.textContent = '';
+
+        if (choice === 'audio') {
+          result.innerHTML = `
+            <audio controls>
+              <source src="${mediaURL}" type="audio/mpeg" />
+              Browser Anda tidak mendukung pemutar audio.
+            </audio>
+            <br />
+            <a href="${mediaURL}" download class="download-btn">Download Audio</a>
+          `;
+        } else {
+          result.innerHTML = `
+            <video controls playsinline>
+              <source src="${mediaURL}" type="video/mp4" />
+              Browser Anda tidak mendukung pemutar video.
+            </video>
+            <br />
+            <a href="${mediaURL}" download class="download-btn">Download Video</a>
+          `;
         }
       } catch (error) {
         statusText.textContent = '🚫 Terjadi kesalahan saat memproses.';
