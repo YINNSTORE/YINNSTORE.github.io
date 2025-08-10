@@ -1,431 +1,270 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yinn-Multitools | Dashboard</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    
-    <style>
-        /* --- CSS Variabel untuk Tema Terang (Default) dan Gelap --- */
-        :root {
-            /* Tema Terang */
-            --bg-color: #f4f7f9;
-            --surface-color: #ffffff;
-            --text-color: #1a202c;
-            --subtle-text-color: #5a6474;
-            --border-color: #e2e8f0;
-            --primary-color: #4a55ff;
-            --primary-hover-color: #3c46d4;
-            --shadow-color: rgba(74, 85, 255, 0.1);
-            --gradient-start: #6a75ff;
-            --gradient-end: #8b5cf6;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TikTok Downloader - Pro</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #4f46e5, #9333ea);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+      color: #fff;
+    }
 
-        body.dark-mode {
-            /* Tema Gelap (Biru-Ungu) */
-            --bg-color: #10111a;
-            --surface-color: #1a1b26;
-            --text-color: #e0e0e0;
-            --subtle-text-color: #a0a0b0;
-            --border-color: #30313f;
-            --primary-color: #6a75ff;
-            --primary-hover-color: #7b84ff;
-            --shadow-color: rgba(106, 117, 255, 0.15);
-        }
+    .container {
+      background: rgba(255 255 255 / 0.1);
+      backdrop-filter: blur(12px);
+      border-radius: 1rem;
+      padding: 2rem;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    input[type="text"], select {
+      background: rgba(255 255 255 / 0.15);
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      color: #fff;
+      font-size: 1rem;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        
-        /* --- Layout Utama --- */
-        .container {
-            width: 90%;
-            max-width: 850px;
-            margin: 2rem auto;
-            padding: 2rem;
-        }
-        
-        /* --- Header dengan Tombol Dashboard --- */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 1.5rem;
-        }
+    input[type="text"]::placeholder {
+      color: rgba(255 255 255 / 0.6);
+    }
 
-        .logo h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+    input[type="text"]:focus, select:focus {
+      outline: none;
+      background: rgba(255 255 255 / 0.3);
+      box-shadow: 0 0 8px 2px rgba(147, 51, 234, 0.6);
+    }
 
-        #dashboard-toggle-btn {
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px var(--shadow-color);
-            transition: all 0.2s ease-in-out;
-        }
+    select {
+      cursor: pointer;
+    }
 
-        #dashboard-toggle-btn svg {
-            width: 24px;
-            height: 24px;
-            stroke: var(--primary-color);
-            transition: stroke 0.3s ease;
-        }
+    button {
+      background: linear-gradient(90deg, #7e3af2, #9333ea);
+      border: none;
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      color: #fff;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
 
-        #dashboard-toggle-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px var(--shadow-color);
-        }
-        
-        /* Animasi saat tombol ditekan */
-        #dashboard-toggle-btn:active {
-            transform: scale(0.9);
-            box-shadow: 0 2px 10px var(--shadow-color);
-        }
-        
-        /* --- Konten Alat --- */
-        .tool-card {
-            background: var(--surface-color);
-            padding: 2.5rem;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
-            transition: background-color 0.3s ease, border-color 0.3s ease;
-        }
+    button:hover:not(:disabled) {
+      background: linear-gradient(90deg, #9333ea, #7e3af2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(147, 51, 234, 0.6);
+    }
 
-        .tool-content { display: none; animation: fadeIn 0.5s ease; }
-        .tool-content.active { display: block; }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
 
-        .tool-content h2 {
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-            font-weight: 600;
-        }
+    .status {
+      font-size: 0.9rem;
+      text-align: center;
+      min-height: 1.25rem;
+      color: rgba(255 255 255 / 0.85);
+    }
 
-        .input-group {
-            display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;
-        }
-        
-        input[type="text"], input[type="url"] {
-            flex-grow: 1; padding: 12px 15px;
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            border-radius: 8px; font-size: 1rem;
-            transition: all 0.3s ease;
-        }
+    .result {
+      text-align: center;
+      margin-top: 1rem;
+    }
 
-        input[type="text"]:focus, input[type="url"]:focus {
-            outline: none; border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px var(--shadow-color);
-        }
-        
-        button {
-            padding: 12px 25px; border: none;
-            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
-            color: #ffffff; font-size: 1rem; font-weight: 600; border-radius: 8px; cursor: pointer;
-            transition: all 0.3s ease; box-shadow: 0 4px 15px var(--shadow-color);
-        }
+    video, audio {
+      width: 100%;
+      border-radius: 0.75rem;
+      outline: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px var(--shadow-color);
-            filter: brightness(1.1);
-        }
+    .download-btn {
+      display: inline-block;
+      margin-top: 0.75rem;
+      background: #22c55e;
+      padding: 0.5rem 1.25rem;
+      border-radius: 0.5rem;
+      color: white;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
 
-        .result-area {
-            margin-top: 1.5rem; padding: 1.5rem;
-            background-color: var(--bg-color);
-            border-radius: 8px; border: 1px solid var(--border-color);
-            min-height: 150px; white-space: pre-wrap; word-wrap: break-word;
-            font-family: 'JetBrains Mono', monospace; /* Font Profesional untuk output */
-            color: var(--subtle-text-color);
-            transition: all 0.3s ease;
-        }
-        
-        #qr-code-container {
-            text-align: center; margin-top: 1.5rem; padding: 1rem;
-            background: #fff; display: inline-block; border-radius: 8px;
-        }
-        
-        /* --- DASHBOARD SIDEBAR --- */
-        #dashboard-menu {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 280px;
-            height: 100%;
-            background-color: var(--surface-color);
-            border-left: 1px solid var(--border-color);
-            box-shadow: -10px 0 30px rgba(0,0,0,0.1);
-            padding: 2rem 0;
-            transform: translateX(100%); /* Sembunyikan ke kanan */
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Transisi smooth */
-            z-index: 1000;
-        }
-        
-        #dashboard-menu.open {
-            transform: translateX(0); /* Tampilkan */
-        }
+    .download-btn:hover {
+      background: #16a34a;
+    }
 
-        #dashboard-menu h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            padding: 0 1.5rem 1rem;
-            border-bottom: 1px solid var(--border-color);
-        }
+    .loader {
+      border: 4px solid rgba(255 255 255 / 0.3);
+      border-top: 4px solid #fff;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
 
-        #dashboard-menu nav { margin-top: 1rem; }
-        
-        .nav-link {
-            display: block; padding: 14px 1.5rem;
-            text-decoration: none; color: var(--subtle-text-color);
-            font-weight: 500; transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-        }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
-        .nav-link:hover {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-        }
-        
-        .nav-link.active {
-            color: var(--primary-color);
-            font-weight: 600;
-            border-left-color: var(--primary-color);
-            background-color: var(--bg-color);
-        }
-        
-        /* --- Tombol Mode Siang/Malam --- */
-        .theme-switcher {
-            position: absolute; bottom: 2rem;
-            left: 50%; transform: translateX(-50%);
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 25px;
-            display: flex;
-        }
-        
-        .theme-switcher button {
-            all: unset; /* Reset semua style default button */
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        
-        .theme-switcher svg {
-            width: 20px;
-            height: 20px;
-            color: var(--subtle-text-color);
-            transition: color 0.3s ease;
-        }
-        .theme-switcher button.active svg {
-            color: var(--primary-color);
-        }
+    #loadingContainer {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 1rem;
+    }
 
-        #theme-indicator {
-            position: absolute;
-            width: 36px;
-            height: 36px;
-            background-color: var(--surface-color);
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-            z-index: -1;
-        }
-        
-        body.dark-mode #theme-indicator {
-            transform: translateX(36px);
-        }
+    footer {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: rgba(255 255 255 / 0.6);
+      text-align: center;
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
-
-    <script>
-        // Skrip ini harus di head untuk mencegah FOUC (Flash of Unstyled Content)
-        // Mengecek tema pilihan user dari local storage dan menerapkannya SEBELUM halaman di-render
-        (function() {
-            const theme = localStorage.getItem('yinn_multitools_theme');
-            if (theme === 'dark') {
-                document.documentElement.classList.add('dark-mode');
-                // Ganti di body juga agar style body.dark-mode berlaku
-                document.addEventListener('DOMContentLoaded', () => {
-                    document.body.classList.add('dark-mode');
-                });
-            }
-        })();
-    </script>
+    footer a {
+      color: rgba(255 255 255 / 0.85);
+      text-decoration: underline;
+    }
+  </style>
 </head>
-<body class="dark-mode"> <aside id="dashboard-menu">
-        <h3>Toolbox</h3>
-        <nav>
-            <a class="nav-link active" data-tool="subdomain-finder">Subdomain Finder</a>
-            <a class="nav-link" data-tool="ip-info">IP Info</a>
-            <a class="nav-link" data-tool="qr-generator">QR Generator</a>
-            <a class="nav-link" data-tool="domain-to-ip">Domain to IP</a>
-        </nav>
+<body>
+  <main class="container" role="main" aria-label="TikTok Video Downloader">
+    <h1 class="text-center text-3xl font-extrabold">TikTok Downloader</h1>
+    <p class="status" id="statusText">Download Tiktok Tanpa Watermark</p>
 
-        <div class="theme-switcher">
-            <div id="theme-indicator"></div>
-            <button id="light-mode-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
-            </button>
-            <button id="dark-mode-btn" class="active">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
-            </button>
-        </div>
-    </aside>
+    <input
+      type="text"
+      id="urlInput"
+      placeholder="Tempel link TikTok di sini..."
+      aria-label="Input URL TikTok"
+    />
 
-    <div class="container">
-        <header>
-            <div class="logo">
-                <h1>Yinn-Multitools</h1>
-            </div>
-            <button id="dashboard-toggle-btn" aria-label="Buka menu">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
-            </button>
-        </header>
+    <select id="qualitySelect" aria-label="Pilih kualitas media">
+      <option value="nowatermark">Video (HD - No Watermark)</option>
+      <option value="watermark">Video (SD - Watermark)</option>
+      <option value="audio">Audio Only (MP3)</option>
+    </select>
 
-        <main class="tool-card">
-            <div id="subdomain-finder" class="tool-content active">
-                <h2>Subdomain Finder</h2>
-                <div class="input-group"><input type="text" id="domain-subdomain" placeholder="Contoh: google.com"><button id="find-subdomains-btn">Cari</button></div>
-                <div class="result-area" id="subdomain-result"><span class="placeholder">Hasil akan muncul di sini...</span></div>
-            </div>
-            <div id="ip-info" class="tool-content">
-                <h2>Informasi IP</h2>
-                <div class="input-group"><input type="text" id="ip-address" placeholder="Contoh: 8.8.8.8"><button id="get-ip-info-btn">Dapatkan Info</button></div>
-                <div class="result-area" id="ip-info-result"><span class="placeholder">Detail alamat IP akan muncul di sini...</span></div>
-            </div>
-            <div id="qr-generator" class="tool-content">
-                <h2>Generate Text to QR Code</h2>
-                <div class="input-group"><input type="text" id="qr-text" placeholder="Masukkan teks atau URL"><button id="generate-qr-btn">Buat</button></div>
-                <div class="result-area" style="text-align: center;"><span class="placeholder" id="qr-placeholder">QR Code Anda akan muncul di sini...</span><div id="qr-code-container" style="display: none;"><img id="qr-code-image" src="" alt="QR Code"></div></div>
-            </div>
-            <div id="domain-to-ip" class="tool-content">
-                <h2>Konversi Domain ke IP</h2>
-                <div class="input-group"><input type="text" id="domain-ip" placeholder="Contoh: github.com"><button id="convert-domain-btn">Konversi</button></div>
-                <div class="result-area" id="domain-ip-result"><span class="placeholder">Alamat IP akan muncul di sini...</span></div>
-            </div>
-        </main>
+    <button id="downloadBtn" type="button" aria-live="polite" aria-busy="false">Ambil Media</button>
+
+    <div id="loadingContainer" aria-live="assertive" aria-busy="true" role="alert" aria-label="Loading">
+      <div class="loader"></div>
+      <p class="status mt-2">Sedang memproses...</p>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const dashboardMenu = document.getElementById('dashboard-menu');
-            const dashboardToggleBtn = document.getElementById('dashboard-toggle-btn');
-            
-            const navLinks = document.querySelectorAll('.nav-link');
-            const toolContents = document.querySelectorAll('.tool-content');
+    <section id="result" class="result" aria-live="polite" aria-atomic="true"></section>
+  </main>
 
-            const lightModeBtn = document.getElementById('light-mode-btn');
-            const darkModeBtn = document.getElementById('dark-mode-btn');
-            
-            // --- FUNGSI DASAR ---
-            function openDashboard() { dashboardMenu.classList.add('open'); }
-            function closeDashboard() { dashboardMenu.classList.remove('open'); }
+  <footer>
+    © 2025 Yinn. All Rights Reserved. Powered by
+    <a href="https://awy.my.id" target="_blank" rel="noopener noreferrer">MiawTeam API</a>
+  </footer>
 
-            // --- EVENT LISTENERS ---
+  <script>
+    const urlInput = document.getElementById('urlInput');
+    const qualitySelect = document.getElementById('qualitySelect');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const loadingContainer = document.getElementById('loadingContainer');
+    const statusText = document.getElementById('statusText');
+    const result = document.getElementById('result');
 
-            // 1. Buka/Tutup Dashboard
-            dashboardToggleBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // Mencegah event 'click' menyebar ke body
-                dashboardMenu.classList.toggle('open');
-            });
+    function showLoading(show) {
+      if(show) {
+        loadingContainer.style.display = 'flex';
+        downloadBtn.disabled = true;
+        statusText.textContent = '';
+        result.innerHTML = '';
+      } else {
+        loadingContainer.style.display = 'none';
+        downloadBtn.disabled = false;
+      }
+    }
 
-            // Tutup dashboard saat klik di luar area dashboard
-            document.addEventListener('click', (e) => {
-                if (dashboardMenu.classList.contains('open') && !dashboardMenu.contains(e.target)) {
-                    closeDashboard();
-                }
-            });
+    downloadBtn.addEventListener('click', async () => {
+      const url = urlInput.value.trim();
+      if (!url || !url.startsWith('http')) {
+        statusText.textContent = '⚠️ Masukkan URL TikTok yang valid.';
+        return;
+      }
 
-            // 2. Sistem Navigasi Tool di Dalam Dashboard
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    
-                    navLinks.forEach(item => item.classList.remove('active'));
-                    toolContents.forEach(content => content.classList.remove('active'));
+      showLoading(true);
 
-                    link.classList.add('active');
-                    const toolId = link.getAttribute('data-tool');
-                    document.getElementById(toolId).classList.add('active');
-                    
-                    // Otomatis tutup dashboard setelah memilih tool
-                    closeDashboard(); 
-                });
-            });
+      try {
+        const apiURL = `https://api.tiklydown.me/api/download?url=${encodeURIComponent(url)}`;
+        const res = await fetch(apiURL);
+        const data = await res.json();
 
-            // 3. Fungsionalitas Tombol Tema (Siang/Malam)
-            function applyTheme(theme) {
-                if (theme === 'dark') {
-                    document.body.classList.add('dark-mode');
-                    darkModeBtn.classList.add('active');
-                    lightModeBtn.classList.remove('active');
-                    localStorage.setItem('yinn_multitools_theme', 'dark');
-                } else {
-                    document.body.classList.remove('dark-mode');
-                    lightModeBtn.classList.add('active');
-                    darkModeBtn.classList.remove('active');
-                    localStorage.setItem('yinn_multitools_theme', 'light');
-                }
-            }
+        if (data.status && data.video.noWatermark) {
+          let mediaURL = '';
+          const choice = qualitySelect.value;
 
-            lightModeBtn.addEventListener('click', () => applyTheme('light'));
-            darkModeBtn.addEventListener('click', () => applyTheme('dark'));
+          if (choice === 'nowatermark') mediaURL = data.video.noWatermark;
+          else if (choice === 'watermark') mediaURL = data.video.watermark;
+          else if (choice === 'audio') mediaURL = data.music.play_url;
 
-            // Set tombol aktif sesuai tema saat ini
-            if (document.body.classList.contains('dark-mode')) {
-                darkModeBtn.classList.add('active');
-            } else {
-                lightModeBtn.classList.add('active');
-            }
-            
-            // --- Fungsionalitas Tombol Alat (Sama seperti sebelumnya) ---
-            document.getElementById('find-subdomains-btn').addEventListener('click', () => { /* ... logika placeholder ... */ });
-            document.getElementById('get-ip-info-btn').addEventListener('click', () => { /* ... logika placeholder ... */ });
-            document.getElementById('generate-qr-btn').addEventListener('click', () => {
-                const text = document.getElementById('qr-text').value;
-                if (!text) { alert('Silakan masukkan teks atau URL.'); return; }
-                const qrImage = document.getElementById('qr-code-image');
-                qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(text)}`;
-                document.getElementById('qr-placeholder').style.display = 'none';
-                document.getElementById('qr-code-container').style.display = 'inline-block';
-            });
-            document.getElementById('convert-domain-btn').addEventListener('click', () => { /* ... logika placeholder ... */ });
-        });
-    </script>
+          if (!mediaURL) {
+            statusText.textContent = '⚠️ Media tidak tersedia untuk pilihan ini.';
+            result.innerHTML = '';
+            showLoading(false);
+            return;
+          }
+
+          statusText.textContent = '';
+
+          if (choice === 'audio') {
+            result.innerHTML = `
+              <audio controls>
+                <source src="${mediaURL}" type="audio/mpeg" />
+                Browser Anda tidak mendukung pemutar audio.
+              </audio>
+              <br />
+              <a href="${mediaURL}" download class="download-btn">Download Audio</a>
+            `;
+          } else {
+            result.innerHTML = `
+              <video controls playsinline>
+                <source src="${mediaURL}" type="video/mp4" />
+                Browser Anda tidak mendukung pemutar video.
+              </video>
+              <br />
+              <a href="${mediaURL}" download class="download-btn">Download Video</a>
+            `;
+          }
+        } else {
+          statusText.textContent = '❌ Gagal mengambil media. Pastikan URL benar dan publik.';
+          result.innerHTML = '';
+        }
+      } catch (error) {
+        statusText.textContent = '🚫 Terjadi kesalahan saat memproses.';
+        result.innerHTML = '';
+        console.error(error);
+      } finally {
+        showLoading(false);
+      }
+    });
+  </script>
 </body>
 </html>
