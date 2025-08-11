@@ -220,7 +220,7 @@
       showLoading(true);
 
       try {
-        const apiURL = `https://awy.my.id/api/tiktok?url=${encodeURIComponent(url)}&apikey=awy`;
+        const apiURL = `https://awy.my.id/download/tiktok?url=${encodeURIComponent(url)}&apikey=awy`;
         const res = await fetch(apiURL);
         if (!res.ok) {
           throw new Error(`API Error: ${res.status} ${res.statusText}`);
