@@ -171,7 +171,6 @@
 
     <select id="qualitySelect" aria-label="Pilih kualitas media">
       <option value="nowatermark">Video (HD - No Watermark)</option>
-      <option value="watermark">Video (SD - Watermark)</option>
       <option value="audio">Audio Only (MP3)</option>
     </select>
 
@@ -221,7 +220,7 @@
       showLoading(true);
 
       try {
-        const apiURL = `https://awy.my.id/api/tiktok?url=${encodeURIComponent(url)}&apikey=miawteam`;
+        const apiURL = `https://awy.my.id/api/tiktok?url=${encodeURIComponent(url)}&apikey=awy`;
         const res = await fetch(apiURL);
         if (!res.ok) {
           throw new Error(`API Error: ${res.status} ${res.statusText}`);
@@ -237,11 +236,9 @@
         const choice = qualitySelect.value;
 
         if (choice === 'nowatermark') {
-          mediaURL = data.result?.nowatermark || data.result?.nowm || data.result?.no_watermark;
-        } else if (choice === 'watermark') {
-          mediaURL = data.result?.watermark;
+          mediaURL = data.result?.video_nowm;
         } else if (choice === 'audio') {
-          mediaURL = data.result?.music || data.result?.audio;
+          mediaURL = data.result?.audio_url;
         }
 
         if (!mediaURL) {
